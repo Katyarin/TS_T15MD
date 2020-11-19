@@ -2,9 +2,10 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-shot_N = 39491
-N_pages_total = 292
-path = 'c:/work/Data/Эксперименты с плазмой/Полихроматор 34/2020.11.12 (первые сигналы с плазмы)/Данные/'
+shot_N = 39542
+N_pages_total = 59
+delta_with_combiscope = 3.2
+#path = 'c:/work/Data/Эксперименты с плазмой/Полихроматор 34/2020.11.12 (первые сигналы с плазмы)/Данные/'
 
 M = 100
 el_charge = 1.6 * 10 ** (-19)
@@ -25,9 +26,11 @@ def find_end_integration(signal):
             return i + 1
     return len(signal) - 1
 
+timeline = []
+end_time = 0
 N_photo_el = {}
 for n_file in range(0, N_pages_total, 50):
-    with open(path + str(shot_N) + '_' + str(n_file) + '_to_' + str(n_file + 50) +'.json', 'r') as f:
+    with open(str(shot_N) + '_' + str(n_file) + '_to_' + str(n_file + 50) +'.json', 'r') as f:
         read_data = json.load(f)
     freq = 3.2  # GS/s
     time_step = 1 / freq  # nanoseconds
@@ -35,6 +38,21 @@ for n_file in range(0, N_pages_total, 50):
     timeline_prototype = [0]
     while len(timeline_prototype) != event_len:
         timeline_prototype.append((timeline_prototype[-1] + time_step)) #in seconds
+
+
+    times = np.array(read_data['timestampsSelection'])
+
+    if n_file == 0:
+        start_times = times[0]
+    times = times - start_times
+    times = times * 2E-8 * 1000  # relative timestamps in ms
+    #if n_file == 0:
+        #delta_with_combiscope = 9.85 - times[1]
+        #delta_times = delta_with_combiscope - times[1]
+        #print(delta_with_combiscope)
+    times = times
+    timeline.extend(times)
+    print(times)
 
     #plt.figure(figsize=(10, 16))
     p = 1
@@ -61,20 +79,21 @@ for n_file in range(0, N_pages_total, 50):
                              integration_timeline[start_index:end_index]) / (M * el_charge * G * R_sv * 0.5))
         p += 1
     #plt.show()
-timeline_for_phe = [i for i in range(0, len(N_photo_el[0]) * 9, 9)]
-print(len(N_photo_el[0]), len(timeline_for_phe))
+#timeline_for_phe = [i for i in range(0, (len(N_photo_el[0])) * delta_times, delta_times)]
+#print(timeline_for_phe)
 
-combiscope_time = [i - (1035 - 119.292) for i in timeline_for_phe]
-
+#combiscope_time = [i + (delta_with_combiscope - timeline_for_phe[2]) for i in timeline_for_phe]
+print(timeline)
 p = 1
 plt.figure(figsize=(20, 6))
 for ch in N_photo_el.keys():
     plt.title('Shot #' + str(shot_N))
-    color = ['r', 'g', 'b', 'm', 'black', 'orange', 'brown', 'pink']
+    #color = ['r', 'g', 'b', 'm', 'black', 'orange', 'brown', 'pink']
     if ch != 0:
-        plt.plot(combiscope_time, N_photo_el[ch], color[ch], label='ch ' + str(ch))
+        plt.plot(timeline, N_photo_el[ch], 'r^-', label='ch' + str(ch))
     plt.ylabel('N, phe')
     plt.xlabel('time')
     plt.legend()
+    plt.show()
     #plt.savefig(path + 'Shot #' + str(shot_N) +', ' 'ch #' + str(ch), dpi=600)
-plt.savefig(path + 'Shot #' + str(shot_N), dpi=600)
+#plt.savefig(path + 'Shot #' + str(shot_N), dpi=600)
