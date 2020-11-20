@@ -3,9 +3,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 shot_N = 39542
-N_pages_total = 59
+
+'''reading_options'''
+with open('config.json', 'r') as file:
+    start_options = json.load(file)
+
+with open('Files/' + start_options["data"] + '/' + str(shot_N) + '.json', 'r') as f:
+    shot_options = json.load(f)
+
+N_pages_total = shot_options["N_pages_get"]
+
 delta_with_combiscope = 3.2
-#path = 'c:/work/Data/Эксперименты с плазмой/Полихроматор 34/2020.11.12 (первые сигналы с плазмы)/Данные/'
+
 
 M = 100
 el_charge = 1.6 * 10 ** (-19)
@@ -30,8 +39,15 @@ timeline = []
 end_time = 0
 N_photo_el = {}
 for n_file in range(0, N_pages_total, 50):
-    with open(str(shot_N) + '_' + str(n_file) + '_to_' + str(n_file + 50) +'.json', 'r') as f:
-        read_data = json.load(f)
+    if N_pages_total - n_file > 50:
+        with open('Files/' + start_options["data"] + '/' + str(shot_N) + '_' + str(n_file) + '_to_' + str(
+                n_file + 50) + '.json', 'r') as f:
+            read_data = json.load(f)
+    elif 50 > N_pages_total - n_file > 0:
+        with open('Files/' + start_options["data"] + '/' + str(shot_N) + '_' + str(n_file) + '_to_' + str(
+                N_pages_total - n_file) + '.json', 'r') as f:
+            read_data = json.load(f)
+
     freq = 3.2  # GS/s
     time_step = 1 / freq  # nanoseconds
     event_len = 1024
@@ -50,7 +66,7 @@ for n_file in range(0, N_pages_total, 50):
         #delta_with_combiscope = 9.85 - times[1]
         #delta_times = delta_with_combiscope - times[1]
         #print(delta_with_combiscope)
-    times = times
+    times = times + delta_with_combiscope
     timeline.extend(times)
     print(times)
 

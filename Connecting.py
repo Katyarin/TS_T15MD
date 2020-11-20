@@ -1,6 +1,18 @@
 import json
 import requests
+import os
 import numpy as np
+
+'''reading_options'''
+with open('config.json', 'r') as file:
+    start_options = json.load(file)
+
+'''create folder to today recording''' #not working now
+path = 'Files/' + start_options['data']
+try:
+    os.mkdir(path)
+except OSError:
+    print('Не удалось создать папку')
 
 '''define function for RPC request'''
 def doRequest(device, req):
@@ -21,32 +33,21 @@ req = {"reqtype": "drsInfo", "subsystem": "drs"}
 ret = doRequest(device, req)
 print(ret)
 
-# Set trigger parameters
+'''Calibrate'''
+def amplitudeCalibration(baseLine = start_options['amplitude_range']):
+    print('___________________')
+    calibra = doRequest(device, {'reqtype':'calibrate', 'baseLine':baseLine})
+    m_A = calibra['data']
+    m_B = calibra['B_coef']
+    print('Calibration set in renge: ', start_options['amplitude_range'])
+    return calibra
 
-# {"reqtype":"triggerConfig","invertedFront":false,"type":"ch1","delay":0,"value":0.05,"subsystem":"drs"}:
-# {"reqtype":"awaitTrigger","burstLength":2,"subsystem":"drs"}:
-# {"reqtype":"drsInfo","subsystem":"drs"}:
-# {"reqtype":"getPagesReady","subsystem":"drs"}:
-#{"reqtype":"regionGetData","from":0,"pages":2,"subsystem":"drs"}:
+amplitudeCalibration()
 
-req = {"reqtype": "triggerConfig", "subsystem": "drs","invertedFront": False,"type":"ch1","delay":0,"value":0.05,}
+'''set trigger options'''
+req = {"reqtype": "triggerConfig", "subsystem": "drs","invertedFront": False,"type":start_options["trigger_ch"],
+       "delay":0,"value": start_options["trigger_lvl"],}
 ret = doRequest(device, req)
-print(ret)
-
-'''Read pages'''
-N_pages_set = 6 # number of pages to be recorded
-
-req = {"reqtype":"awaitTrigger","burstLength":N_pages_set,"subsystem":"drs"}
-ret = doRequest(device, req)
-print(ret)
 print('___________________')
-if ret['status']=='success':
-    print('Number of pages to be registered: ', N_pages_set)
-
-'''Check number of pages '''
-req = {"reqtype":"getPagesReady","subsystem":"drs"}
-ret = doRequest(device, req)
+print('set trigger options')
 print(ret)
-N_pages_get = ret['pagesReady']
-print('________________________________________')
-print('Number of registered pages: ',N_pages_get)

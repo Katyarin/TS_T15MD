@@ -4,12 +4,26 @@ import matplotlib.pyplot as plt
 
 
 shot_N = '39545'
-N_pages_total = 59
+
+'''reading_options'''
+with open('config.json', 'r') as file:
+    start_options = json.load(file)
+
+with open('Files/' + start_options["data"] + '/' + str(shot_N) + '.json', 'r') as f:
+    shot_options = json.load(f)
+
+N_pages_total = shot_options["N_pages_get"]
 #path = 'c:/work/Data/Эксперименты с плазмой/Полихроматор 34/2020.11.12 (первые сигналы с плазмы)/Данные/'
 
-for n_file in range(0, N_pages_total, 50):
-    with open(str(shot_N) + '_' + str(n_file) + '_to_' + str(n_file + 50) +'.json', 'r') as f:
-        read_data = json.load(f)
+for n_file in range(0, N_pages_total + 50, 50):
+    if N_pages_total - n_file > 50:
+        with open('Files/' + start_options["data"] + '/' + str(shot_N) + '_' + str(n_file) + '_to_' + str(
+                n_file + 50) + '.json', 'r') as f:
+            read_data = json.load(f)
+    elif 50 > N_pages_total - n_file > 0:
+        with open('Files/' + start_options["data"] + '/' + str(shot_N) + '_' + str(n_file) + '_to_' + str(
+                N_pages_total - n_file) + '.json', 'r') as f:
+            read_data = json.load(f)
 
     plt.figure(figsize=(10, 16))
     p = 1
