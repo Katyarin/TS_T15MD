@@ -84,7 +84,7 @@ for n_file in range(0, N_pages_total, 50):
                 for i in range(len(signal)):
                     signal[i] = signal[i] - base_line
                     #timeline_prototype[i] = timeline_prototype[i] * (10 ** (-9))
-
+                #var = np.sqrt(np.var(signal[0:200]))
                 start_index = find_start_integration(signal)
                 end_index = find_end_integration(signal)
                 #plt.plot(timeline_prototype, signal, alpha=0.3)
@@ -113,3 +113,7 @@ for ch in N_photo_el.keys():
     plt.show()
     #plt.savefig(path + 'Shot #' + str(shot_N) +', ' 'ch #' + str(ch), dpi=600)
 #plt.savefig(path + 'Shot #' + str(shot_N), dpi=600)
+
+'''with open('Files/' + start_options["data"] + '/' + str(shot_N) + 'N_phe.json') as f:
+    for_temp = {'data': N_photo_el, 'timeline': timeline}
+    json.dump(for_temp, f)'''
