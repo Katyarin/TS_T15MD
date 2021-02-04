@@ -3,8 +3,8 @@ import requests
 import os
 import numpy as np
 
-shot_N = '39545'
-N_pages_set = 6 # number of pages to be recorded
+shot_N = '1'
+N_pages_set = 40 # number of pages to be recorded
 
 
 '''reading_options'''

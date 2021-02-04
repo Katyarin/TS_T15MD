@@ -37,8 +37,8 @@ print(ret)
 def amplitudeCalibration(baseLine = start_options['amplitude_range']):
     print('___________________')
     calibra = doRequest(device, {'reqtype':'calibrate', 'baseLine':baseLine})
-    m_A = calibra['data']
-    m_B = calibra['B_coef']
+    #m_A = calibra['data']
+    #m_B = calibra['B_coef']
     print('Calibration set in renge: ', start_options['amplitude_range'])
     return calibra
 
