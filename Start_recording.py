@@ -11,7 +11,7 @@ N_pages_set = 40 # number of pages to be recorded
 with open('config.json', 'r') as file:
     start_options = json.load(file)
 
-with open('Files/' + start_options["data"] + '/' + str(shot_N) + '.json', 'w') as f:
+with open('Files/' + shot_N + '/' + 'options.json', 'w') as f:
     shot_options = {'N_pages_set': N_pages_set, 'config': start_options}
     json.dump(shot_options, f)
 

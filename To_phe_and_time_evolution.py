@@ -2,13 +2,13 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-shot_N = 39542
+shot_N = 39782
 
 '''reading_options'''
 with open('config.json', 'r') as file:
     start_options = json.load(file)
 
-with open('Files/' + start_options["data"] + '/' + str(shot_N) + '.json', 'r') as f:
+with open('Files/' + str(shot_N) + '/' + 'options.json', 'r') as f:
     shot_options = json.load(f)
 
 N_pages_total = shot_options["N_pages_get"]

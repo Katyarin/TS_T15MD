@@ -3,12 +3,17 @@ import requests
 import os
 import numpy as np
 
+#shot_N = '1' #no plasma
+shot_N = 39787 #plasma
+N_pages_set = 56 # number of pages to be recorded
+
+
 '''reading_options'''
 with open('config.json', 'r') as file:
     start_options = json.load(file)
 
-'''create folder to today recording''' #not working now
-path = 'Files/' + start_options['data']
+'''create folder to shot recording'''
+path = 'Files/' + str(shot_N)
 try:
     os.mkdir(path)
 except OSError:
@@ -51,3 +56,14 @@ ret = doRequest(device, req)
 print('___________________')
 print('set trigger options')
 print(ret)
+
+with open('Files/' + str(shot_N) + '/' + 'options.json', 'w') as f:
+    shot_options = {'N_pages_set': N_pages_set, 'config': start_options}
+    json.dump(shot_options, f)
+
+req = {"reqtype":"awaitTrigger","burstLength":N_pages_set,"subsystem":"drs"}
+ret = doRequest(device, req)
+print(ret)
+print('___________________')
+if ret['status']=='success':
+    print('Number of pages to be registered: ', N_pages_set)
