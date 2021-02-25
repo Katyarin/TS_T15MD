@@ -3,8 +3,10 @@ import requests
 import os
 import numpy as np
 
-shot_N = 39847
+with open("Files/shot.txt", 'r') as sh_file:
+    shot_N = int(sh_file.read())
 
+print(shot_N)
 
 '''reading_options'''
 with open('config.json', 'r') as file:

@@ -4,9 +4,12 @@ import os
 import numpy as np
 
 #shot_N = '1' #no plasma
-shot_N = 39847 #plasma
+shot_N = 39850 #plasma
 N_pages_set = 56 # number of pages to be recorded
 
+'''shot update'''
+with open('Files/shot.txt', 'w') as sh_file:
+    sh_file.write(str(shot_N))
 
 '''reading_options'''
 with open('config.json', 'r') as file:
