@@ -3,7 +3,7 @@ import requests
 import os
 import numpy as np
 
-shot_N = 39787
+shot_N = 39847
 
 
 '''reading_options'''

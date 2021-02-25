@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-shot_N = 39782
+shot_N = 39846
 
 '''reading_options'''
 with open('config.json', 'r') as file:

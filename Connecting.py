@@ -4,7 +4,7 @@ import os
 import numpy as np
 
 #shot_N = '1' #no plasma
-shot_N = 39787 #plasma
+shot_N = 39847 #plasma
 N_pages_set = 56 # number of pages to be recorded
 
 
@@ -18,6 +18,11 @@ try:
     os.mkdir(path)
 except OSError:
     print('Не удалось создать папку')
+
+with open('Files/' + str(shot_N) + '/' + 'options.json', 'w') as f:
+    shot_options = {'N_pages_set': N_pages_set, 'config': start_options}
+    json.dump(shot_options, f)
+
 
 '''define function for RPC request'''
 def doRequest(device, req):
@@ -57,9 +62,7 @@ print('___________________')
 print('set trigger options')
 print(ret)
 
-with open('Files/' + str(shot_N) + '/' + 'options.json', 'w') as f:
-    shot_options = {'N_pages_set': N_pages_set, 'config': start_options}
-    json.dump(shot_options, f)
+
 
 req = {"reqtype":"awaitTrigger","burstLength":N_pages_set,"subsystem":"drs"}
 ret = doRequest(device, req)

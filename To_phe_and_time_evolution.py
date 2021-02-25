@@ -2,7 +2,7 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-shot_N = 39782
+shot_N = 39846
 
 '''reading_options'''
 with open('config.json', 'r') as file:
@@ -38,16 +38,16 @@ def find_end_integration(signal):
 timeline = []
 end_time = 0
 N_photo_el = {}
-for n_file in range(0, N_pages_total, 50):
+
+for n_file in range(0, N_pages_total + 50, 50):
     if N_pages_total - n_file > 50:
-        with open('Files/' + start_options["data"] + '/' + str(shot_N) + '_' + str(n_file) + '_to_' + str(
+        with open('Files/' + str(shot_N) + '/' + 'raw' + '/' + str(shot_N) + '_' + str(n_file) + '_to_' + str(
                 n_file + 50) + '.json', 'r') as f:
             read_data = json.load(f)
     elif 50 > N_pages_total - n_file > 0:
-        with open('Files/' + start_options["data"] + '/' + str(shot_N) + '_' + str(n_file) + '_to_' + str(
+        with open('Files/' + str(shot_N) + '/' + 'raw' + '/' + str(shot_N) + '_' + str(n_file) + '_to_' + str(
                 N_pages_total - n_file) + '.json', 'r') as f:
             read_data = json.load(f)
-
     freq = 3.2  # GS/s
     time_step = 1 / freq  # nanoseconds
     event_len = 1024
