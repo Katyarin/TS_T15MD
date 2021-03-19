@@ -8,8 +8,9 @@ shot_N = 39542
 with open('config.json', 'r') as file:
     start_options = json.load(file)
 
-with open('Files/' + start_options["data"] + '/' + str(shot_N) + '.json', 'r') as f:
+with open('Files/' + str(shot_N) + '/' + 'options.json', 'r') as f:
     shot_options = json.load(f)
+
 
 with open('Files/' + start_options["data"] + '/' + str(shot_N) + 'N_phe.json') as fp:
     data = json.load(fp)

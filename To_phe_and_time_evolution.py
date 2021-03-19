@@ -2,7 +2,7 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-shot_N = 39846
+shot_N = 39848
 
 '''reading_options'''
 with open('config.json', 'r') as file:
@@ -101,16 +101,16 @@ for n_file in range(0, N_pages_total + 50, 50):
 #combiscope_time = [i + (delta_with_combiscope - timeline_for_phe[2]) for i in timeline_for_phe]
 print(timeline)
 p = 1
-plt.figure(figsize=(20, 6))
+plt.figure(figsize=(10, 3))
 for ch in N_photo_el.keys():
     plt.title('Shot #' + str(shot_N))
     #color = ['r', 'g', 'b', 'm', 'black', 'orange', 'brown', 'pink']
     if ch != 0:
-        plt.plot(timeline, N_photo_el[ch], 'r^-', label='ch' + str(ch))
+        plt.plot(timeline, N_photo_el[ch], '^-', label='ch' + str(ch))
     plt.ylabel('N, phe')
     plt.xlabel('time')
     plt.legend()
-    plt.show()
+plt.show()
     #plt.savefig(path + 'Shot #' + str(shot_N) +', ' 'ch #' + str(ch), dpi=600)
 #plt.savefig(path + 'Shot #' + str(shot_N), dpi=600)
 
