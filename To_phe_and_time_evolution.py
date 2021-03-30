@@ -13,8 +13,8 @@ with open('Files/' + str(shot_N) + '/' + 'options.json', 'r') as f:
 
 N_pages_total = shot_options["N_pages_get"]
 
-delta_with_combiscope = 3.2
-
+#delta_with_combiscope = 3.2
+delta_with_combiscope = 0
 
 M = 100
 el_charge = 1.6 * 10 ** (-19)
@@ -62,19 +62,11 @@ for n_file in range(0, N_pages_total + 50, 50):
         start_times = times[0]
     times = times - start_times
     times = times * 2E-8 * 1000  # relative timestamps in ms
-    #if n_file == 0:
-        #delta_with_combiscope = 9.85 - times[1]
-        #delta_times = delta_with_combiscope - times[1]
-        #print(delta_with_combiscope)
     times = times + delta_with_combiscope
     timeline.extend(times)
-    print(times)
 
-    #plt.figure(figsize=(10, 16))
     p = 1
     for ch in range(8):
-        #plt.subplot(4, 2, p)
-        #plt.title(str(n_file) + '_channel #' + str(ch + 1))
         if n_file == 0:
             N_photo_el[ch] = []
         for page in range(50):
@@ -83,23 +75,14 @@ for n_file in range(0, N_pages_total + 50, 50):
                 base_line = sum(signal[0:200]) / len(signal[0:200])
                 for i in range(len(signal)):
                     signal[i] = signal[i] - base_line
-                    #timeline_prototype[i] = timeline_prototype[i] * (10 ** (-9))
-                #var = np.sqrt(np.var(signal[0:200]))
+                var_in_sr = np.var(signal[0:200])
                 start_index = find_start_integration(signal)
                 end_index = find_end_integration(signal)
-                #plt.plot(timeline_prototype, signal, alpha=0.3)
-                #plt.axvline(timeline_prototype[start_index], color='r')
-                #plt.axvline(timeline_prototype[end_index], color='g')
                 integration_timeline = [i * (10 ** (-9)) for i in timeline_prototype]
                 N_photo_el[ch].append(np.trapz(signal[start_index:end_index],
                              integration_timeline[start_index:end_index]) / (M * el_charge * G * R_sv * 0.5))
         p += 1
-    #plt.show()
-#timeline_for_phe = [i for i in range(0, (len(N_photo_el[0])) * delta_times, delta_times)]
-#print(timeline_for_phe)
 
-#combiscope_time = [i + (delta_with_combiscope - timeline_for_phe[2]) for i in timeline_for_phe]
-print(timeline)
 p = 1
 plt.figure(figsize=(10, 3))
 for ch in N_photo_el.keys():
@@ -111,8 +94,7 @@ for ch in N_photo_el.keys():
     plt.xlabel('time')
     plt.legend()
 plt.show()
-    #plt.savefig(path + 'Shot #' + str(shot_N) +', ' 'ch #' + str(ch), dpi=600)
-#plt.savefig(path + 'Shot #' + str(shot_N), dpi=600)
+
 
 '''with open('Files/' + start_options["data"] + '/' + str(shot_N) + 'N_phe.json') as f:
     for_temp = {'data': N_photo_el, 'timeline': timeline}
