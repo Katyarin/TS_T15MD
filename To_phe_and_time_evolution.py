@@ -1,8 +1,9 @@
 import json
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
-shot_N = 39848
+shot_N = 40827
 
 '''reading_options'''
 with open('config.json', 'r') as file:
@@ -38,6 +39,9 @@ def find_end_integration(signal):
 timeline = []
 end_time = 0
 N_photo_el = {}
+N_plot = {}
+var_phe = {}
+var_plot = {}
 
 for n_file in range(0, N_pages_total + 50, 50):
     if N_pages_total - n_file > 50:
@@ -48,13 +52,12 @@ for n_file in range(0, N_pages_total + 50, 50):
         with open('Files/' + str(shot_N) + '/' + 'raw' + '/' + str(shot_N) + '_' + str(n_file) + '_to_' + str(
                 N_pages_total - n_file) + '.json', 'r') as f:
             read_data = json.load(f)
-    freq = 3.2  # GS/s
+    freq = 5  # GS/s
     time_step = 1 / freq  # nanoseconds
     event_len = 1024
     timeline_prototype = [0]
     while len(timeline_prototype) != event_len:
         timeline_prototype.append((timeline_prototype[-1] + time_step)) #in seconds
-
 
     times = np.array(read_data['timestampsSelection'])
 
@@ -66,36 +69,61 @@ for n_file in range(0, N_pages_total + 50, 50):
     timeline.extend(times)
 
     p = 1
-    for ch in range(8):
+    for ch in range(6):
         if n_file == 0:
             N_photo_el[ch] = []
+            N_plot[ch] = []
+            var_phe[ch] = []
+            var_plot[ch] = []
         for page in range(50):
             signal = read_data['data'][ch][page*1024:(page+1)*1024]
             if len(signal) != 0:
                 base_line = sum(signal[0:200]) / len(signal[0:200])
                 for i in range(len(signal)):
                     signal[i] = signal[i] - base_line
-                var_in_sr = np.var(signal[0:200])
+                var_in_sr = np.var(signal[0:400])
                 start_index = find_start_integration(signal)
                 end_index = find_end_integration(signal)
                 integration_timeline = [i * (10 ** (-9)) for i in timeline_prototype]
-                N_photo_el[ch].append(np.trapz(signal[start_index:end_index],
-                             integration_timeline[start_index:end_index]) / (M * el_charge * G * R_sv * 0.5))
+                Ni = np.trapz(signal[start_index:end_index],
+                             integration_timeline[start_index:end_index]) / (M * el_charge * G * R_sv * 0.5)
+                if max(signal) > 0.95:
+                    N_photo_el[ch].append(None)
+                    N_plot[ch].append(float('NaN'))
+                    var_phe[ch].append(None)
+                    var_plot[ch].append(float('NaN'))
+                else:
+                    N_photo_el[ch].append(Ni)
+                    N_plot[ch].append(Ni)
+                    var = math.sqrt(math.fabs(6715 * 0.0625 * var_in_sr * 1e6 - 1.14e4 * 0.0625) + math.fabs(Ni) * 4)
+                    var_phe[ch].append(var)
+                    var_plot[ch].append(var)
+                #k = 6715 * 0.0625 (фотоэлектронов^2 / mv^2)
+                #b = -1.14e4 * 0.0625(фотоэлектронов^2)
+
+
+
+
         p += 1
+print(timeline)
 
 p = 1
 plt.figure(figsize=(10, 3))
+plt.title('Shot #' + str(shot_N))
 for ch in N_photo_el.keys():
-    plt.title('Shot #' + str(shot_N))
     #color = ['r', 'g', 'b', 'm', 'black', 'orange', 'brown', 'pink']
     if ch != 0:
-        plt.plot(timeline, N_photo_el[ch], '^-', label='ch' + str(ch))
-    plt.ylabel('N, phe')
-    plt.xlabel('time')
-    plt.legend()
+        plt.errorbar([i for i in range(len(N_plot[ch]))] , N_plot[ch], yerr=var_plot[ch], label='ch' + str(ch))
+        #plt.plot(timeline, N_photo_el[ch], '^-', label='ch' + str(ch))
+plt.ylabel('N, phe')
+plt.xlabel('time')
+plt.legend()
 plt.show()
 
 
-'''with open('Files/' + start_options["data"] + '/' + str(shot_N) + 'N_phe.json') as f:
-    for_temp = {'data': N_photo_el, 'timeline': timeline}
-    json.dump(for_temp, f)'''
+
+with open('Files/' + str(shot_N) + '/' + 'N_phe.json', 'w') as f:
+    for_temp = {'timeline': timeline, 'data': N_photo_el, 'err': var_phe}
+    json.dump(for_temp, f)
+
+print('end')

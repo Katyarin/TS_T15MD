@@ -5,7 +5,7 @@ import numpy as np
 
 #shot_N = '1' #no plasma
 shot_N = 39850 #plasma
-N_pages_set = 56 # number of pages to be recorded
+N_pages_set = 56 #number of pages to be recorded
 
 '''shot update'''
 with open('Files/shot.txt', 'w') as sh_file:
@@ -66,7 +66,7 @@ print('set trigger options')
 print(ret)
 
 
-
+'''start waiting signals'''
 req = {"reqtype":"awaitTrigger","burstLength":N_pages_set,"subsystem":"drs"}
 ret = doRequest(device, req)
 print(ret)
