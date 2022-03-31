@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-shot_N = 40827
+shot_N = 41541
 
 '''reading_options'''
 with open('config.json', 'r') as file:
@@ -20,7 +20,19 @@ delta_with_combiscope = 0
 M = 100
 el_charge = 1.6 * 10 ** (-19)
 G = 10
-R_sv = 10000 #Ом
+R_sv = {}
+if shot_options["polyn"] == 35:
+    for ch in range(6):
+        if ch == 2:
+            R_sv[ch] = 10000 #Ом
+        else:
+            R_sv[ch] = 5000
+elif shot_options["polyn"] == 34:
+    for ch in range(6):
+        R_sv[ch] = 10000
+else:
+    print('error poly')
+    stop
 
 def find_start_integration(signal):
     maximum = signal.index(max(signal))
@@ -86,7 +98,7 @@ for n_file in range(0, N_pages_total + 50, 50):
                 end_index = find_end_integration(signal)
                 integration_timeline = [i * (10 ** (-9)) for i in timeline_prototype]
                 Ni = np.trapz(signal[start_index:end_index],
-                             integration_timeline[start_index:end_index]) / (M * el_charge * G * R_sv * 0.5)
+                             integration_timeline[start_index:end_index]) / (M * el_charge * G * R_sv[ch] * 0.5)
                 if max(signal) > 0.95:
                     N_photo_el[ch].append(None)
                     N_plot[ch].append(float('NaN'))
@@ -113,7 +125,7 @@ plt.title('Shot #' + str(shot_N))
 for ch in N_photo_el.keys():
     #color = ['r', 'g', 'b', 'm', 'black', 'orange', 'brown', 'pink']
     if ch != 0:
-        plt.errorbar([i for i in range(len(N_plot[ch]))] , N_plot[ch], yerr=var_plot[ch], label='ch' + str(ch))
+        plt.errorbar([i for i in range(len(N_plot[ch]))], N_plot[ch], yerr=var_plot[ch], label='ch' + str(ch))
         #plt.plot(timeline, N_photo_el[ch], '^-', label='ch' + str(ch))
 plt.ylabel('N, phe')
 plt.xlabel('time')

@@ -2,7 +2,7 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-shot_N = 40827
+shot_N = 39782
 
 '''reading_options'''
 with open('config.json', 'r') as file:
@@ -36,6 +36,8 @@ for n_file in range(0, N_pages_total, 50):
                 for k in range(len(signal)):
                     signal[k] = signal[k] - base_line
                 plt.plot(signal, alpha=0.3)
+        #plt.xlim(0, 200)
+        #plt.ylim(-0.02, 0.02)
         p += 1
 
     plt.show()

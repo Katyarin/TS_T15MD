@@ -17,7 +17,7 @@ def doRequest(device, req):
     return r.json()
 
 '''define device'''
-device = {'ip': '192.168.10.21', 'port': '8080'}
+device = {'ip': '192.168.10.34', 'port': '8080'}
 
 for N_pages_get in range(0, N_pages_total + 50, 50):
     if 0 < N_pages_total - N_pages_get < 50:

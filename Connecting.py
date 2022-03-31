@@ -4,8 +4,9 @@ import os
 import numpy as np
 
 #shot_N = '1' #no plasma
-shot_N = 39850 #plasma
+shot_N = 41551 #plasma
 N_pages_set = 56 #number of pages to be recorded
+polyn = 34
 
 '''shot update'''
 with open('Files/shot.txt', 'w') as sh_file:
@@ -23,7 +24,7 @@ except OSError:
     print('Не удалось создать папку')
 
 with open('Files/' + str(shot_N) + '/' + 'options.json', 'w') as f:
-    shot_options = {'N_pages_set': N_pages_set, 'config': start_options}
+    shot_options = {'polyn': polyn, 'N_pages_set': N_pages_set, 'config': start_options}
     json.dump(shot_options, f)
 
 

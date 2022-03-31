@@ -17,12 +17,19 @@ with open('Files/' + str(shot_N) + '/' + 'options.json', 'r') as f:
 
 N_pages_set = shot_options["N_pages_set"]
 
-'''create folder to shot recording''' #not working now
+'''create folder to shot recording'''
 path = 'Files/' + str(shot_N) + '/raw'
 try:
     os.mkdir(path)
 except OSError:
     print('Не удалось создать папку')
+
+'''create folder to shot recording''' #not working now
+'''path = 'Files/' + str(shot_N) + '/raw'
+try:
+    os.mkdir(path)
+except OSError:
+    print('Не удалось создать папку')'''
 
 '''define function for RPC request'''
 def doRequest(device, req):
