@@ -224,10 +224,22 @@ def TS_temp(shot_N, poly):
 
     N_phe = {}
     sigma = {}
+    timeline = []
     for ch in range(1,5):
-        N_phe[str(ch)] = [event['poly'][poly]['ch'][ch-1]['ph_el'] for event in TSdata['data'] if event['error'] == None]
-        sigma[str(ch)] = [event['poly'][poly]['ch'][ch-1]['err'] for event in TSdata['data'] if event['error'] == None]
-    timeline = [event['timestamp'] for event in TSdata['data'] if event['error'] == None]
+        N_phe[str(ch)] = []
+        sigma[str(ch)] = []
+        for event in TSdata['data']:
+            if event['error'] == None:
+                N_phe[str(ch)].append(event['poly'][poly]['ch'][ch-1]['ph_el'])
+                sigma[str(ch)].append(event['poly'][poly]['ch'][ch-1]['err'])
+            else:
+                N_phe[str(ch)].append(0)
+                sigma[str(ch)].append(1000)
+    for event in TSdata['data']:
+        if event['error'] == None:
+            timeline.append(event['timestamp'])
+        else:
+            timeline.append(0)
 
 
     with open(TSpath + '2021.10.19_1064.4.json', 'r') as fc:
@@ -312,7 +324,7 @@ for shotn in shots:
             err_plot.append(T15_data['Te_err'][j])
 
 
-    plt.figure()
+    '''plt.figure()
     for poly in range(10):
         if poly < 9:
             continue
@@ -321,11 +333,8 @@ for shotn in shots:
                  [TS_by_me['expected']['T_arr'][i['T_e'][poly]['index']] for i in data['data']['events'] if
                   i['error'] == None and i['T_e'][poly]['error'] == None], yerr=[i['T_e'][poly]['Terr'] for i in data['data']['events'] if
                   i['error'] == None and i['T_e'][poly]['error']== None], label=poly)
-        for i, j in enumerate(data['data']['events']):
-            try:
-                print(i, j['T_e'][poly]['chi2'], TS_by_me['chi2'][i+1], T15_data['chi2'][i+1])
-            except KeyError:
-                pass
+        print(len(data['data']['events']), len(TS_by_me['chi2']), len(T15_data['chi2']))
+        
     #plt.errorbar([i + delta for i in list(reversed(T15_data['timeline']))], T15_data['Te'], T15_data['Te_err'], label='T15 34')
     plt.errorbar(time_plot, Te_plot, yerr=err_plot, label='T15 34')
     plt.errorbar(TS_by_me['timeline'], TS_by_me['Te'], fmt='--', yerr=TS_by_me['Te_err'], label='TS by me')
@@ -333,7 +342,7 @@ for shotn in shots:
     plt.legend()
     plt.grid()
     plt.xlabel('time, ms')
-    plt.ylabel('Te, eV')
+    plt.ylabel('Te, eV')'''
 
     plt.figure()
     plt.hist(TS_by_me['chi2'], bins=10, range=(0,20))
