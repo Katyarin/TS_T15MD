@@ -194,7 +194,7 @@ A2, las_const2 = absolute_cal(path, 'scope_0_2.csv', 10, 90.8, 21.5, 2)
 print(A1, A2)
 print(las_const1, las_const2)
 
-with open('c:/work/Thomson Scattering/T-15/Abs_cal/22.06.01_abs_cal.json', 'w') as res_file:
+with open('source/22.06.01_abs_cal.json', 'w') as res_file:
     json.dump({'data': '22.08.16', 'poly': 34 ,'A': A1[0], 'E_las_const': las_const1}, res_file)
 print(A1, A2)
 print(las_const1, las_const2)
