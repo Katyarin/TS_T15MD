@@ -42,6 +42,6 @@ def to_json(shotn, ch_count=6):
 
     print('Code OK')
 
-shots = [41784, 41786]
+'''shots = [42000]
 for shotn in shots:
-    to_json(shotn)
+    to_json(shotn)'''

@@ -4,14 +4,15 @@ import matplotlib.pyplot as plt
 import math as mt
 import numpy as np
 
-thetta = 126
+thetta = 123.5
+fiber = 'ust'
 
 sp_cal_path = 'c:/work/Thomson Scattering/T-15/Spectral_cal/'
 
 name_list = [1, 2, 3, 4, 5]
 dev_34 = {'lmd': [], 'ch': {1: [], 2: [], 3: [], 4: [], 5: []}}
 
-with open(sp_cal_path + '22.03.30_sp_cal.json', 'r') as sp_file:
+with open(sp_cal_path + '22.04.13_sp_cal_' + fiber + '.json', 'r') as sp_file:
     sp_cal = json.load(sp_file)
 
 dev_34['lmd'] = sp_cal['l']
@@ -64,12 +65,12 @@ def waiting_signal(ch, Te, thetta, Spectral_calibr):
     Sigma = [C*((e)**(-2*al*B[i]))/(A[i] * lo * 10 ** (-9)) * (mt.sin(fi))**2 for i in range(len(x_list))]
 
     dl = [i * 10 ** (-9) for i in l]
-    F = np.trapz([Sigma[i] * Spectral_calibr['ch'][ch][i] for i in range(len(l))], dl)
-    return F * lo * L * E / (h * c)
+    F = np.trapz([Sigma[i] * Spectral_calibr['ch'][ch][i] / dl[i] for i in range(len(l))], dl)
+    return F
 
 N_th = {}
 
-Te_ex = [1.1 ** i for i in range(2, 83)]
+Te_ex = [1.1 ** (i / 10) for i in range(20, 830)]
 for ch in name_list:
     N_th[ch] = []
     for temp in Te_ex:
@@ -84,6 +85,6 @@ plt.show()
 
 Result = {'Te': Te_ex, 'ch': N_th}
 
-with open('dev_num_34.json', 'w') as f_fin:
+with open('22.06.30_dev_num_34.json', 'w') as f_fin:
     json.dump(Result, f_fin)
 
