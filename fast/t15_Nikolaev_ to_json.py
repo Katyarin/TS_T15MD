@@ -2,9 +2,9 @@ from pathlib import Path
 import json
 
 
-def to_json(shotn, ch_count=6):
+def to_json(shotn, ch_count=6, path_name='c:/work/Data/T-15/New_prog/'):
     # ! use only Your own local copy of raw data files!
-    path = Path('c:/work/Data/T-15/New_prog/%d' % shotn)
+    path = Path(path_name + str(shotn))
     if not path.is_file():
         print('not found')
 
@@ -45,3 +45,5 @@ def to_json(shotn, ch_count=6):
 '''shots = [42000]
 for shotn in shots:
     to_json(shotn)'''
+
+to_json('100pages', 7, 'c:/work/Code/SpectralCalibrStend/drs_raw_data/')

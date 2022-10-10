@@ -1,4 +1,4 @@
-import Connect_slow
+import slow.Connect_slow as Connect_slow
 import time
 
 time_wait = 5

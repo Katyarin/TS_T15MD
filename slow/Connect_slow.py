@@ -3,7 +3,7 @@ import struct
 import binascii
 import json
 
-ADDRESS = '192.168.10.107'
+ADDRESS = '192.168.10.41'
 PORT = 8001
 BUFFER_SIZE = 20+2048*4+2048*2*8
 print(BUFFER_SIZE)
